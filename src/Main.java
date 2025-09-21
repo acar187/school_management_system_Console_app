@@ -7,7 +7,15 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("1: Student hinzufügen\n2: Kurs hinzufügen\n3: Student zu Kurs zuordnen\n4: Kurse anzeigen\n5: Studenten eines Kurses anzeigen\n0: Beenden");
+            System.out.println("\n=== Kursverwaltung ===");
+            System.out.println("1: Student hinzufügen");
+            System.out.println("2: Kurs hinzufügen");
+            System.out.println("3: Student zu Kurs zuordnen");
+            System.out.println("4: Kurse anzeigen");
+            System.out.println("5: Studenten eines Kurses anzeigen");
+            System.out.println("0: Beenden");
+            System.out.print("Eingabe: ");           
+            
             int choice = sc.nextInt();
             sc.nextLine(); // Zeilenumbruch einlesen
 
@@ -17,12 +25,14 @@ public class Main {
                     String name = sc.nextLine();
                     System.out.print("Email: ");
                     String email = sc.nextLine();
-                    manager.addStudent(new Student(manager.getCourses().size() + 1, name, email));
+                    manager.addStudent(new Student(name, email));
+                    System.out.println("✅ Student hinzugefügt!");
                 }
                 case 2 -> {
                     System.out.print("Kursname: ");
                     String name = sc.nextLine();
-                    manager.addCourse(new Course(manager.getCourses().size() + 1, name));
+                    manager.addCourse(new Course(name));
+                    System.out.println("✅ Kurs hinzugefügt!");
                 }
                 case 3 -> {
                     System.out.print("Student-ID: ");
@@ -30,20 +40,37 @@ public class Main {
                     System.out.print("Kurs-ID: ");
                     int cId = sc.nextInt();
                     sc.nextLine();
-                    Student s = manager.getCourses().stream().flatMap(c -> c.getStudents().stream()).filter(st -> st.getId() == sId).findFirst().orElse(null);
-                    Course c = manager.getCourses().stream().filter(course -> course.toString().startsWith(String.valueOf(cId))).findFirst().orElse(null);
-                    if (s != null && c != null) manager.assignStudentToCourse(s, c);
+            
+                    Student s = manager.findStudentById(sId);
+                    Course c = manager.findCourseById(cId);
+
+                    if (s != null && c != null){ manager.assignStudentToCourse(s, c);
+                        System.out.println("✅ Student zu Kurs zugeordnet!");
+                    }
+                     else System.out.println("⚠️ Ungültige IDs!");
                 }
-                case 4 -> manager.getCourses().forEach(System.out::println);
+                case 4 ->{
+                    System.out.println("📚 Kurse:"); 
+                    manager.getCourses().forEach(System.out::println);
+                }
                 case 5 -> {
                     System.out.print("Kurs-ID: ");
                     int cId = sc.nextInt();
                     sc.nextLine();
-                    Course c = manager.getCourses().stream().filter(course -> course.toString().startsWith(String.valueOf(cId))).findFirst().orElse(null);
-                    if (c != null) c.getStudents().forEach(System.out::println);
+                    Course c = manager.getCourses().stream().filter(st -> st.getId() == cId).findFirst().orElse(null);
+                    if (c != null) {
+                        System.out.println("Gefundener Kurs: " + c.getName() + ", Studentenanzahl: " + c.getStudents().size());
+                        c.getStudents().forEach(System.out::println);
+                    } else {
+                        System.out.println("Kein Kurs mit dieser ID gefunden.");
+                    }
                 }
-                case 0 -> running = false;
-            }
+                case 0 -> {
+                    running = false;
+                    System.out.println("Programm beendet.");
+                }
+                default -> System.out.println("Ungültige Eingabe. Bitte erneut versuchen.");
+            }               
         }
         sc.close();
     }

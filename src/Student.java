@@ -1,26 +1,20 @@
-public class Student {
-    private int id;
-    private String name;
-    private String email;
+public class Student extends Person {
 
-    public Student(int id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
+    private String matriculationNumber; // z.B. "s1234567"
 
-    public int getId() {
-        return id;
+    public Student(String name, String email, String matriculationNumber) {
+        super(name, email);
+        this.matriculationNumber = matriculationNumber;
     }
-    public String getName() {
-        return name;
-    }
-    public String getEmail() {
-        return email;
+    
+    public String getMatriculationNumber() {
+        return matriculationNumber;
     }
 
     @Override
     public String toString() {
-        return "Student [id=" + id + ", name=" + name + ", email=" + email + "]";
+        return "Student{" + super.toString() + ", matriculationNumber=" + matriculationNumber + '}';
     }
+
+    
 }
